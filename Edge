@@ -1,0 +1,106 @@
+// Detect edges
+void edges(int height, int width, RGBTRIPLE image[height][width])
+{
+    //Define edge variables
+    int counter;
+    RGBTRIPLE copy[height][width];
+    int gxt[9] = {-1, 0, 1, -2, 0, 2, -1, 0, 1};
+    int gyt[9] = {-1, -2, -1, 0, 0, 0, 1, 2, 1};
+    int gx[9][3] = {0};
+    int gy[9][3] = {0};
+    double square;
+    int temp;
+    //Loop through each pixel in each row
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            //Loop through the 9 pixels square
+            for (int h = i - 1; h <= i + 1; h++)
+            {
+                for (int w = j - 1; w <= j + 1; w++)
+                {
+                    //Check if the pixel exists
+                    if (h >= 0 && w >= 0 && h < height && w < width)
+                    {
+                        //Calc gx table for each rgb per pixel by multipling it by the gx
+                        gx[counter][0] = (image[h][w].rgbtRed * gxt[counter]);
+                        gx[counter][1] = (image[h][w].rgbtGreen * gxt[counter]);
+                        gx[counter][2] = (image[h][w].rgbtBlue * gxt[counter]);
+                        
+                        //Calc gy table for each rgb per pixel by multipling it by the gy
+                        gy[counter][0] = (image[h][w].rgbtRed * gyt[counter]);
+                        gy[counter][1] = (image[h][w].rgbtGreen * gyt[counter]);
+                        gy[counter][2] = (image[h][w].rgbtBlue * gyt[counter]);
+                    }
+                    //Add to counter
+                    counter++;
+                }
+            }
+            //Add all the gx & gy numbers together for each color of each pixel that
+            //Add all reds
+            gx[0][0] = gx[0][0] + gx[1][0] + gx[2][0] + gx[3][0] + gx[4][0] + gx[5][0] + gx[6][0] + gx[7][0] + gx[8][0];
+            gy[0][0] = gy[0][0] + gy[1][0] + gy[2][0] + gy[3][0] + gy[4][0] + gy[5][0] + gy[6][0] + gy[7][0] + gy[8][0];
+            //Add all greens
+            gx[0][1] = gx[0][1] + gx[1][1] + gx[2][1] + gx[3][1] + gx[4][1] + gx[5][1] + gx[6][1] + gx[7][1] + gx[8][1];
+            gy[0][1] = gy[0][1] + gy[1][1] + gy[2][1] + gy[3][1] + gy[4][1] + gy[5][1] + gy[6][1] + gy[7][1] + gy[8][1];
+            //Add all blues
+            gx[0][2] = gx[0][2] + gx[1][2] + gx[2][2] + gx[3][2] + gx[4][2] + gx[5][2] + gx[6][2] + gx[7][2] + gx[8][2];
+            gy[0][2] = gy[0][2] + gy[1][2] + gy[2][2] + gy[3][2] + gy[4][2] + gy[5][2] + gy[6][2] + gy[7][2] + gy[8][2];
+            
+            //Calc the new final value for each color by square root of gx^2 + gy^2 & set the copy pixel to that color
+            //Red
+            square = sqrt(pow(gx[0][0], 2) + pow(gy[0][0], 2));
+            temp = round(square);
+            if (temp > 255)
+            {
+                temp = 255;
+            }
+            copy[i][j].rgbtRed = temp;
+            
+            //Green
+            square = sqrt(pow(gx[0][1], 2) + pow(gy[0][1], 2));
+            temp = round(square);
+            if (temp > 255)
+            {
+                temp = 255;
+            }
+            copy[i][j].rgbtGreen = temp;
+            
+            //Blue
+            square = sqrt(pow(gx[0][2], 2) + pow(gy[0][2], 2));
+            temp = round(square);
+            if (temp > 255)
+            {
+                temp = 255;
+            }
+            copy[i][j].rgbtBlue = temp;
+            
+            //Reset counter
+            counter = 0;
+            
+            //Reset gx & gy arrays through a simple loop
+            for (int a = 0; a < 9; a++)
+            {
+                
+                for (int b = 0; b < 3; b++)
+                {
+                    gx[a][b] = 0;
+                    gy[a][b] = 0;
+                }
+            }
+        }
+    }
+    //Loop through copy picture pixel by pixel
+    for (int h = 0; h < height; h++)
+    {
+        for (int w = 0; w < width; w++)
+        {
+            //Copy the copy pixel to the real picture pixel
+            image[h][w].rgbtRed = copy[h][w].rgbtRed;
+            image[h][w].rgbtGreen = copy[h][w].rgbtGreen;
+            image[h][w].rgbtBlue = copy[h][w].rgbtBlue;
+        }
+    }
+    return;
+}
