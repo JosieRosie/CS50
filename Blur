@@ -1,0 +1,100 @@
+// Blur image
+void blur(int height, int width, RGBTRIPLE image[height][width])
+{
+    //Define blur variables
+    int counter = 0;
+    RGBTRIPLE pixel[9];
+    RGBTRIPLE copy[height][width];
+    float sum;   
+    int ared = 0;
+    int agreen = 0;
+    int ablue = 0;
+
+    //Loop through each pixel in each row
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            //Loop through the 9 pixels square
+            for (int h = i - 1; h <= i + 1; h++)
+            {
+                for (int w = j - 1; w <= j + 1; w++)
+                {
+                    //Check if the pixel exists
+                    if (h >= 0 && w >= 0 && h < height && w < width)
+                    {
+                        //Assign rgb values to pixel variable
+                        pixel[counter].rgbtRed = image[h][w].rgbtRed;
+                        pixel[counter].rgbtGreen = image[h][w].rgbtGreen;
+                        pixel[counter].rgbtBlue = image[h][w].rgbtBlue;
+                        //Add to counter
+                        counter++;
+                    }
+                }
+            }
+                        
+            // //PART THAT ISN"T WORKING
+            // //Loop through counter
+            // for (int k = 0; k < counter; k++)
+            // {
+            //     //Add all reds greens & blues together
+            //     ared += pixel[k].rgbtRed;
+            //     agreen += pixel[k].rgbtGreen;
+            //     ablue += pixel[k].rgbtBlue;
+            // }
+
+            //BUT THIS UGLY VERSION WORKS FINE FOR SOME REASON
+            //Add all reds greens & blues together
+            if (counter == 9)
+            {
+              ared = pixel[0].rgbtRed + pixel[1].rgbtRed + pixel[2].rgbtRed + pixel[3].rgbtRed + pixel[4].rgbtRed + pixel[5].rgbtRed + pixel[6].rgbtRed + pixel[7].rgbtRed + pixel[8].rgbtRed;
+              agreen = pixel[0].rgbtGreen + pixel[1].rgbtGreen + pixel[2].rgbtGreen + pixel[3].rgbtGreen + pixel[4].rgbtGreen + pixel[5].rgbtGreen + pixel[6].rgbtGreen + pixel[7].rgbtGreen + pixel[8].rgbtGreen;
+              ablue = pixel[0].rgbtBlue + pixel[1].rgbtBlue + pixel[2].rgbtBlue + pixel[3].rgbtBlue + pixel[4].rgbtBlue + pixel[5].rgbtBlue + pixel[6].rgbtBlue + pixel[7].rgbtBlue + pixel[8].rgbtBlue;
+            }
+            else if (counter == 6)
+            {
+              ared = pixel[0].rgbtRed + pixel[1].rgbtRed + pixel[2].rgbtRed + pixel[3].rgbtRed + pixel[4].rgbtRed + pixel[5].rgbtRed;
+              agreen = pixel[0].rgbtGreen + pixel[1].rgbtGreen + pixel[2].rgbtGreen + pixel[3].rgbtGreen + pixel[4].rgbtGreen + pixel[5].rgbtGreen;
+              ablue = pixel[0].rgbtBlue + pixel[1].rgbtBlue + pixel[2].rgbtBlue + pixel[3].rgbtBlue + pixel[4].rgbtBlue + pixel[5].rgbtBlue; 
+            }
+            else if (counter == 4)
+            {
+              ared = pixel[0].rgbtRed + pixel[1].rgbtRed + pixel[2].rgbtRed + pixel[3].rgbtRed;
+              agreen = pixel[0].rgbtGreen + pixel[1].rgbtGreen + pixel[2].rgbtGreen + pixel[3].rgbtGreen;
+              ablue = pixel[0].rgbtBlue + pixel[1].rgbtBlue + pixel[2].rgbtBlue + pixel[3].rgbtBlue;
+            }
+
+            //Average & round red
+            sum = (float)ared / (float)counter;
+            ared = round(sum);
+            //Average & round green
+            sum = (float)agreen / (float)counter;
+            agreen = round(sum);
+            //Average & round blue
+            sum = (float)ablue / (float)counter;
+            ablue = round(sum);
+
+            //Assign new average values to the copy pixel so that it doesn't mess up the averages of the real pixels
+            copy[i][j].rgbtRed = ared;
+            copy[i][j].rgbtGreen = agreen;
+            copy[i][j].rgbtBlue = ablue;
+            
+            //Reset counter
+            counter = 0;
+        }
+    }
+    //Transfer the copy picture to the real picture
+    
+    //Loop through copy picture pixel by pixel
+    for (int h = 0; h < height; h++)
+    {
+        for (int w = 0; w < width; w++)
+        {
+            //Copy the copy pixel to the real picture pixel
+            image[h][w].rgbtRed = copy[h][w].rgbtRed;
+            image[h][w].rgbtGreen = copy[h][w].rgbtGreen;
+            image[h][w].rgbtBlue = copy[h][w].rgbtBlue;
+        }
+    }
+    return;
+}
