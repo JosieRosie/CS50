@@ -19,7 +19,7 @@ def main():
     with open(sys.argv[1], "r") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            teams.append(dict(row))
+            teams.append({team : row["team"], rating : int(row["rating"])})
         
     counts = {}
     # TODO: Simulate N tournaments and keep track of win counts
@@ -61,10 +61,9 @@ def simulate_tournament(teams):
     # TODO
     #Base case scenario
     if len(teams) == 1:
-        for key in teams(0):
-            return key
+        return teams[0]["team"]
     #Recursion
-    simulate_tournament(simulate_round(teams))
+    return simulate_tournament(simulate_round(teams))
     
 if __name__ == "__main__":
     main()
