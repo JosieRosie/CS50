@@ -26,13 +26,14 @@ def main():
     for key in csvdata[0]:
         STR.append(key)
     #Check the amount of each STR sequence found in the dna & add to a dictionary
-    for i in range(len(STR)):
+    for i in range(1, len(STR), 1):
         result = strcount(STR[i], dna, 0, 0)
         STRd[STR[i]] = result
         
     #Compare the STR counts to each person in the csv file
     #Same counter
     samec = 0
+    found = False
     #Loop
     for person in range(len(csvdata)):
         for s in range(len(STR)):
@@ -41,7 +42,12 @@ def main():
                 samec += 1
         if samec == len(STR):
             print(csvdata[person][name])
+            found = True
             break
+        else:
+            samec = 0
+    if found == False:
+        print("No match")
 
 #strcount function to calculate the highest STR sequence count in the strand of dna
 #STR is the STR sequence we are trying to find, dna is the entire dna strand, count and i are to keep track of numbers for recursion purposes keep set to 0 when calling the function
